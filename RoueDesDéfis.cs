@@ -4,6 +4,8 @@ using System.Linq;
 
 public class CPHInline
 {
+	public string LogPrefix = "[RDD] ";
+	
 	public bool Execute()
 	{
 		List<KeyValuePair<string, DateTime>> PendingRoues = new List<KeyValuePair<string, DateTime>>();
@@ -23,11 +25,11 @@ public class CPHInline
 			int value = CPH.GetUserVar<int>(userName, "RDD", true)+1;
 			CPH.SetTwitchUserVar(userName, "RDD", value, true);
 			CPH.SetTwitchUserVar(userName, "FollowDate", DateTime.Now, true);
-			CPH.LogInfo($"{userName} has follow the channel for the first time on {DateTime.Now}.");
+			CPH.LogInfo(LogPrefix + $"{userName} has follow the channel for the first time on {DateTime.Now}.");
 		}
 		else
 		{ 
-			CPH.LogInfo($"{userName} has follow again the channel.");
+			CPH.LogInfo(LogPrefix + $"{userName} has follow again the channel.");
 		}
 		
 				
@@ -40,7 +42,9 @@ public class CPHInline
 	
 		int value = CPH.GetTwitchUserVar<int>(userName, "RDD", true)+1;
 		CPH.SetTwitchUserVar(userName, "RDD", value, true);
-				
+		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|{value-1} => {value}");
+		
 		return true;
 	}
 	
@@ -50,6 +54,8 @@ public class CPHInline
 		int NbRoue = Convert.ToInt32(args["input1"].ToString());
 		
 		CPH.SetTwitchUserVar(userName, "RDD", NbRoue, true);
+		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|set to => {NbRoue}");
 				
 		return true;
 	}
@@ -61,6 +67,8 @@ public class CPHInline
 		int NbRoue = CPH.GetGlobalVar<int>("NbRoue", false);
 		int value = CPH.GetTwitchUserVar<int>(userName, "RDD", true)+NbRoue;
 		CPH.SetTwitchUserVar(userName, "RDD", value, true);
+		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|{value-NbRoue}+{NbRoue} => {value}");
 				
 		return true;
 	}
@@ -77,6 +85,8 @@ public class CPHInline
 		
 		CPH.SetTwitchUserVar(userName, "RDD", value+AddRDD, true);
 		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|{value-AddRDD}+{AddRDD} => {value}|Raided with {viewers}");
+		
 		return true;
 	}
 	
@@ -92,6 +102,8 @@ public class CPHInline
 		
 		CPH.SetTwitchUserVar(userName, "RDD", value+AddRDD, true);
 		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|{value-AddRDD}+{AddRDD} => {value}|Currency={currency}");
+		
 		return true;
 	}
 	
@@ -106,6 +118,8 @@ public class CPHInline
 		int AddRDD = (int)Math.Round(r, 0);
 		
 		CPH.SetTwitchUserVar(userName, "RDD", value+AddRDD, true);
+		
+		CPH.LogInfo(LogPrefix+ $"{userName}|{args["__source"]}|{value-AddRDD}+{AddRDD} => {value}|Currency={currency}");
 		
 		return true;
 	}
@@ -123,6 +137,8 @@ public class CPHInline
 		
 		CPH.TwitchReplyToMessage($"{userName}, ta demande d'utilisation de roue a bien été prise en compte", args["msgId"].ToString());
 		
+		CPH.LogInfo(LogPrefix+ $"{userName}|useRDD|{value+1} => {value}");
+		
 		return true;
 	}
 	
@@ -135,6 +151,8 @@ public class CPHInline
 		
 		RoueEnAttente.Remove(NextViewer);
 		CPH.SetGlobalVar("PendingRDD", RoueEnAttente, false);
+		CPH.LogInfo(LogPrefix+ $"{NextViewer.Key}|PullNextRDD");
+		
 		
 		return true;
 	}
@@ -146,6 +164,7 @@ public class CPHInline
 		{
 			int value = CPH.GetTwitchUserVar<int>(Viewer.Key, "RDD", true)+1;
 			CPH.SetTwitchUserVar(Viewer.Key, "RDD", value, true);
+			CPH.LogInfo(LogPrefix + $"{Viewer.Key}|Remboursement|{value-1} => {value}");
 		}
 		
 		return true;
