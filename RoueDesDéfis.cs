@@ -128,7 +128,15 @@ public class CPHInline
 	{
 		string userName = args["userName"].ToString();
 		
-		int value = CPH.GetTwitchUserVar<int>(userName, "RDD", true)-1;
+		int value = CPH.GetTwitchUserVar<int>(userName, "RDD", true);
+		
+		if (value <= 0) 
+		{
+			CPH.TwitchReplyToMessage($"{userName}, impossible d'utiliser une roue quand on a {value} roue(s).", args["msgId"].ToString());
+			return false;
+		}
+		
+		value--;
 		CPH.SetTwitchUserVar(userName, "RDD", value, true); 
 		
 		List<KeyValuePair<string, DateTime>> RoueEnAttente = CPH.GetGlobalVar<List<KeyValuePair<string, DateTime>>>("PendingRDD", false);
