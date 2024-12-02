@@ -2,6 +2,8 @@ using System;
 
 public class CPHInline
 {
+	int DefaultTempVipDuration = 90;
+	
 	public bool RegisterVIP()
 	{
 		string userName = args["user"].ToString();
@@ -16,8 +18,7 @@ public class CPHInline
 	{
 		string userName = args["user"].ToString();
 		CPH.SetTwitchUserVar(userName, "VipDate", DateTime.Now, true);
-		int VipDuration = CPH.GetGlobalVar<int>("VipDuration", true);
-		CPH.SetTwitchUserVar(userName, "VipDuration", VipDuration, true);
+		int VipDuration = CPH.GetTwitchUserVar<int>(userName, "VipDuration", true);
 		CPH.TwitchAddVip(userName);
 		CPH.LogInfo($"{userName} gained a temporary VIP status for {VipDuration} days.");
 		// your main code goes here
@@ -29,10 +30,21 @@ public class CPHInline
 		string userName = args["user"].ToString();
 		DateTime VipDate = CPH.GetTwitchUserVar<DateTime>(userName, "VipDate", true);
 		int VipDuration = CPH.GetTwitchUserVar<int>(userName, "VipDuraiton", true);
-		
-		if ((bool)args["isVip"] == false) { CPH.LogInfo($"{userName} is not VIP."); return false; }
-		
 		double nbDays = (DateTime.Now - VipDate).TotalDays;
+		
+		if ((bool)args["isVip"] == false) 
+		{ 
+			CPH.LogInfo($"{userName} is not VIP."); return false; 
+			if (nbDays < VipDuration) 
+			{ 
+				CPH.LogInfo($"{userName} Should be VIP because (VipDate = {VipDate} / nbDays = {nbDays} / VipDuration = {VipDuration})."); 
+				CPH.TwitchAddVip(userName);
+				CPH.LogInfo($"{userName} is VIP again with same parameters."); 
+			}
+			return false; 
+		}
+		
+		
 
 		if (VipDate == new DateTime(1,1,1,0,0,0)) { CPH.LogInfo($"VIP {userName} is permanent VIP."); return true; }
 		else if (nbDays < 0) 
@@ -56,10 +68,21 @@ public class CPHInline
 	{
 		string userName = args["user"].ToString();
 		DateTime VipDate = CPH.GetTwitchUserVar<DateTime>(userName, "VipDate", true);
-		int VipDuration = CPH.GetTwitchUserVar<int>(userName, "VipDuraiton", true);
-		if (VipDuration == null) { VipDuration = 90; }
+		int VipDuration = CPH.GetTwitchUserVar<int>(userName, "VipDuration", true);
+		if (VipDuration == null) { VipDuration = DefaultTempVipDuration; }
+		double nbDays2 = (DateTime.Now - VipDate).TotalDays;
 		
-		if ((bool)args["isVip"] == false) { CPH.LogInfo($"{userName} is not VIP."); return false; }
+		if ((bool)args["isVip"] == false) 
+		{ 
+			CPH.LogInfo($"{userName} is not VIP."); return false; 
+			if (nbDays2 < VipDuration) 
+			{ 
+				CPH.LogInfo($"{userName} Should be VIP because (VipDate = {VipDate} / nbDays2 = {nbDays2} / VipDuration = {VipDuration})."); 
+				CPH.TwitchAddVip(userName);
+				CPH.LogInfo($"{userName} is VIP again with same parameters."); 
+			}
+			return false; 
+		}
 		
 		double nbDays = (DateTime.Now - VipDate).TotalDays;
 
@@ -70,7 +93,7 @@ public class CPHInline
 		}
 		else if (nbDays > VipDuration)
 		{
-			CPH.LogInfo($"{userName} VIP has expired ({VipDate} / {nbDays})");
+			CPH.LogInfo($"{userName} VIP has expired (VipDate = {VipDate} / nbDays = {nbDays} / VipDuration = {VipDuration})");
 			CPH.TwitchRemoveVip(userName);
 		}
 		else
@@ -81,11 +104,11 @@ public class CPHInline
 	}
 	
 	public bool MyVIP()
-	{
+	{		
 		string userName = args["user"].ToString();
 		DateTime VipDate = CPH.GetTwitchUserVar<DateTime>(userName, "VipDate", true);
 		int VipDuration = CPH.GetTwitchUserVar<int>(userName, "VipDuraiton", true);
-		if (VipDuration == null) { VipDuration = 90; }
+		if (VipDuration == null) { VipDuration = DefaultTempVipDuration; }
 						
 		if ((bool)args["isVip"] == false) { CPH.SendMessage($"{userName}, tu n'es pas VIP."); return true; }
 		if (VipDate == new DateTime(1,1,1,0,0,0)) { CPH.SendMessage($"Ton statut de VIP est permanent."); return true; }
