@@ -7,6 +7,8 @@ public class CPHInline
 	public bool Execute()
 	{
 		string userName = args["userName"].ToString();
+		string[] exclusion = ["Lix_DansSonLabo", "JarLix_Mk2"];
+		if (exclusion.Contains(userName)) { return false; }
 		DateTime d = DateTime.Now;
 		
 		InitVars();
@@ -95,6 +97,29 @@ public class CPHInline
 		
 		return true;
 	}
+
+	public bool GetRandomActiveUser()
+	{
+		InitVars();
+		int duration;
+		if (!CPH.TryGetArg("Duration", out duration))
+		{
+			duration = 5;
+		}
+				
+		var L = CPH.GetGlobalVar<List<Tuple<string, DateTime>>>("ActiveTwitchUsers", false);
+		
+		var Lactifs = L.Where(x => DateTime.Now - x.Item2 <= new TimeSpan(0, duration, 0))
+							.Select(x => x.Item1)
+							.ToList();
+
+		string rUser = Lactifs[new Random().Next(0, Lactifs.Count-1)];
+		
+		CPH.SetArgument("RandomActiveUser", rUser);
+		
+		return true;
+	}
+
 }
 
 
