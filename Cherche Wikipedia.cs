@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Web;
 
-/* requires references : Micrtosoft.CSharp.dll, Newtonsoft.Json.dll, System.Web.Extension.dll */
-
 public class CPHInline
 {
 	public bool Execute()
@@ -42,7 +40,7 @@ public class CPHInline
 					
 					if (d3.extract != "") 
 					{
-						CPH.SendMessage(d3.extract.ToString().Substring(0,195) + 
+						CPH.SendMessage(d3.extract.ToString().Substring(0,400) + 
 							(d3.extract.ToString().Length > 195 ? "..." : ""));
 					}
 					else 
