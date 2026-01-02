@@ -17,8 +17,8 @@ public class CPHInline
 		string message = args["message"].ToString();
 		if (message.Contains("https://clips.twitch.tv") || message.Contains($"https://www.twitch.tv/{chanName}/clip/"))
 		{
-			//insert here the discord webhook
-			string Webhook_link = "https://discord.com/api/webhooks/1041653136865103873/KGkQbUAOz0nsHtp13htSAvH0n5Rsuux_tU5g2gkn9lISjs8kOXJ5fK7NR9ewef1zl7tO"; 
+			//Créer votre Webhook dans discord > paramètres serveur > Intégrations > Webhooks
+			string Webhook_link = "https://discord.com/api/webhooks/99999999999999999999999999/xxxxxxxxxxxxxxxxxxxxxxxx"; 
 		
 			using (HttpClient httpClient = new HttpClient())
 			{
