@@ -10,12 +10,15 @@ public class CPHInline
 {
 	public bool Execute()
 	{
+		CPH.TwitchGetBroadcaster();
+		string chanName = args["broadcastUserName"].ToString();
+
 		// your main code goes here
 		string message = args["message"].ToString();
-		if (message.Contains("https://clips.twitch.tv"))
+		if (message.Contains("https://clips.twitch.tv") || message.Contains($"https://www.twitch.tv/{chanName}/clip/"))
 		{
 			//insert here the discord webhook
-			string Webhook_link = ""; 
+			string Webhook_link = "https://discord.com/api/webhooks/1041653136865103873/KGkQbUAOz0nsHtp13htSAvH0n5Rsuux_tU5g2gkn9lISjs8kOXJ5fK7NR9ewef1zl7tO"; 
 		
 			using (HttpClient httpClient = new HttpClient())
 			{
@@ -25,9 +28,12 @@ public class CPHInline
 
 				string[] findURL = message.Split(' ');
 				string url = "";
-				foreach (string a in findURL) { if (a.Contains("https://clips.twitch.tv")) { url = a; break; } }
+				foreach (string a in findURL) 
+				{
+					 if (a.Contains("https://clips.twitch.tv") || message.Contains($"https://www.twitch.tv/{chanName}/clip/")) { url = a; break; } 
+				}
 
-				string str = $"{user} a crée un clip. {url}";
+				string str = $"{user} a partagé un clip. {url}";
 
 				StringContent s = new StringContent(JsonConvert.SerializeObject(new {content = str})); 
 				form.Add(s, "payload_json");	
